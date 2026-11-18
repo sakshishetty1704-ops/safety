@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trana - Account</title>
+    <style>
+        body { font-family: sans-serif; max-width: 400px; margin: 50px auto; padding: 20px; }
+        input, button { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box;border-radius: 30px; }
+        button { background: #ff4d4d; color: white; border: none; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Create Account</h2>
+    <input type="text" id="regName" placeholder="Full Name" required />
+    <input type="email" id="regEmail" placeholder="Email" required />
+    <input type="password" id="regPass" placeholder="Password" required />
+    <input type="text" id="regContact" placeholder="Emergency Contact Phone" />
+    <button onclick="registerUser()">Sign Up</button>
+
+    <hr style="margin: 25px 0;">
+
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required />
+    <input type="password" id="loginPass" placeholder="Password" required />
+    <button onclick="loginUser()">Log In</button>
+
+    <script>
+        async function registerUser() {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: document.getElementById('regName').value,
+                    email: document.getElementById('regEmail').value,
+                    password: document.getElementById('regPass').value,
+                    emergencyContact: document.getElementById('regContact').value
+                })
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function loginUser() {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: document.getElementById('loginEmail').value,
+                    password: document.getElementById('loginPass').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem('tranaUser', JSON.stringify(data.user));
+                window.location.href = 'trana.html'; // Redirect to your map page
+            } else {
+                alert(data.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="style.css"/>
+    
+    <title>Trāṇa</title>
+    <style>
+        /* 1. Forces your map container box to have strict visual dimensions */
+      
+        /* 2. Leaflet CSS Quick Injection: Fixes invisible broken tile fragments */
+        .leaflet-pane, .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow, .leaflet-tile-container, .leaflet-map-pane svg,
+         .leaflet-map-pane canvas, .leaflet-zoom-box, .leaflet-image-layer, .leaflet-layer {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .leaflet-container {
+            overflow: hidden;
+            -ms-touch-action: none;
+            touch-action: none;
+        }
+        .leaflet-tile {
+            filter: inherit;
+            visibility: hidden;
+        }
+        .leaflet-tile-loaded {
+            visibility: inherit;
+        }
+        .leaflet-zoom-animated {
+            transform-origin: 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <header class="apphead">
+            <button class="menuicon" onclick="toggleMenu()">&#9776;</button>
+            <button class="icon-btn menu-btn" aria-label="Open Menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <div class="profile-avatar">
+                <img src="https://placeholder.com" alt="Profile Avatar">
+            </div>
+        </header>
+    <main class="appmain">
+    
+    <div id="risk-banner" style="padding: 6px; border-radius: 8px; background: #dcfce7; color: #166534; font-weight: bold; font-size: 0.8rem; text-align: center;">
+         ZONE STATUS: SECURE (0 Incidents)
+    </div>
+
+    <div id="map"></div>
+    </main>
+    <footer class="sos">
+        <h3>Tracking Location...</h3>
+        <p id="locinfo">(location)</p>
+        <button id="sosbtn" onclick=soscall()>EMERGENCY</button>
+       
+    <button onclick="soscall('Neighbor_Node_04')" style="margin-top: 8px; padding: 8px; width: 100%; border-radius: 10px; border: 1px solid #ccc; background: #f8fafc; font-size: 0.8rem; cursor: pointer;">
+        Simulate Offline Neighbor Bridge SOS
+    </button>
+
+    </footer>
+    </div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="map.js"></script>
+
+</body>
+</html>

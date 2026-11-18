@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trana - Receiver Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 { color: #172554; }
+
+        button {
+            padding: 12px 20px;
+            margin: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #enable { background: #2563eb; color: white; }
+        #stop { background: #333; color: white; }
+
+        #alerts {
+            max-width: 600px;
+            margin: 25px auto;
+        }
+
+        .alert {
+            background: white;
+            border-left: 6px solid #dc2626;
+            padding: 18px;
+            margin-bottom: 15px;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .alert h2 { color: #dc2626; }
+    </style>
+</head>
+<body>
+
+    <h1>TRANA Emergency Receiver</h1>
+    <p id="connection">Connecting to server...</p>
+
+    <button id="enable">Enable Alert Sound </button>
+    <button id="stop">Stop Sound</button>
+
+    <div id="alerts">
+        <p>No emergency alerts received.</p>
+    </div>
+
+    <script>
+        const socket = io();
+        const connection = document.getElementById("connection");
+        const alerts = document.getElementById("alerts");
+
+        let audioContext;
+        let soundTimer = null;
+
+        socket.on("connect", () => {
+            connection.textContent = "Connected to Trana server";
+            socket.emit("join-receivers");
+        });
+
+        socket.on("disconnect", () => {
+            connection.textContent = "Disconnected. Reconnecting...";
+        });
+
+        document.getElementById("enable").onclick = async () => {
+            audioContext = new AudioContext();
+            await audioContext.resume();
+            alert("Alert sound enabled!");
+        };
+
+        function playSOSSound() {
+            if (!audioContext || audioContext.state !== "running") return;
+
+            if (soundTimer) clearInterval(soundTimer);
+
+            const playTone = () => {
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                oscillator.type = "sine";
+                oscillator.frequency.value = 880;
+
+                gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(
+                    0.001, audioContext.currentTime + 0.4
+                );
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.4);
+            };
+
+            playTone();
+            soundTimer = setInterval(playTone, 1000);
+        }
+
+        document.getElementById("stop").onclick = () => {
+            if (soundTimer) clearInterval(soundTimer);
+            soundTimer = null;
+        };
+
+        socket.on("new-sos", (alertData) => {
+            if (alerts.querySelector("p")) {
+                alerts.innerHTML = "";
+            }
+
+            const card = document.createElement("div");
+            card.className = "alert";
+
+            const heading = document.createElement("h2");
+            heading.textContent = " EMERGENCY SOS!";
+
+            const name = document.createElement("p");
+            name.textContent = "Sender: " + alertData.name;
+
+            const location = document.createElement("p");
+
+const mapUrl = `https://www.google.com/maps?q=${alertData.lat},${alertData.lng}`;
+
+location.innerHTML = `
+    Location:
+    <a href="${mapUrl}" target="_blank" rel="noopener noreferrer">
+        View Location on Google Maps 
+    </a>
+`;
+
+            const time = document.createElement("p");
+            time.textContent =
+                "Received: " + new Date(alertData.createdAt).toLocaleString();
+
+            card.append(heading, name, location, time);
+            alerts.prepend(card);
+
+            playSOSSound();
+
+            if ("Notification" in window &&
+                Notification.permission === "granted") {
+                new Notification("TRANA: Emergency SOS!", {
+                    body: "An emergency alert has been received."
+                });
+            }
+        });
+    </script>
+</body>
+</html>

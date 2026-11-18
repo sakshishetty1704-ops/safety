@@ -1,0 +1,126 @@
+/* 1. Reset standard browser gaps so our layout flows perfectly to the edges */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* 2. Center our phone frame perfectly on your computer screen for easy testing */
+body {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.sos{
+    display:flex;
+    flex-direction:column;
+    padding:100 px;
+    border-radius: 30px,30px,0,0;
+    background-color: white;
+}
+#sosbtn{
+    background-color: rgb(159, 3, 3);
+    padding-left: 40px;
+    padding-right: 40px;
+}
+.phone {
+    width: 375px;        /* Simulates standard mobile width */
+    height: 700px;       /* Fixed phone viewport testing height */
+    background-color:#fafafa;
+    border-radius: 28px; /* Curved phone corners matching your sketch */
+    
+    display: flex;
+    flex-direction: column; /* Stacks your apphead, appmain, and sos vertically */
+    overflow: hidden;    /* Keeps everything perfectly clipped inside corners */
+    border: 6px solid #c7ecfa; /* Device frame bezel */
+}
+
+/* Your Header Layout */
+.apphead {
+    height: 70px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #c7ecfa;
+    border-bottom: 1px solid #c7ecfa;
+    z-index:1;
+}
+.menuicon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 22px;
+    height: 2.5px;
+    
+    border-radius: 2px;
+}
+
+/* Profile image sizing */
+.profile-avatar img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.appmain {
+    flex: 1; /* Pushes down down your .sos footer dynamically */
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 16px;
+    background-color: #fafafa;
+}
+
+/* Your Map Element Class styling */
+#map {
+    width: 100%;
+    height: 350px;  
+    min-height: 250px;     /* Gives your map a distinct box boundary shape */
+    border-radius: 16px; /* Smooth card edges like your drawing */
+    border: 1px solid #e5e7eb;
+    background-color: transparent; /* Placeholder color before map initialization */
+    display: block;
+    z-index:10;
+}
+
+/* Your Bottom Panel Layout */
+.sos {
+    height: 300px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-top: 1px solid #f3f4f6;
+    display: flex;
+    justify-content: center;
+    z-index: 3;
+    border-radius: 30px 30px 0 0;
+}
+
+#sosbtn {
+    width: 100%;
+    padding: 16px;
+    background-color: #b60505; /* Alert red */
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#sosbtn:hover {
+    background-color: #dc2626;
+}
+
+#sosbtn:active {
+    transform: scale(0.97); /* Little tactile press bounce */
+}
